@@ -87,6 +87,9 @@ def search_station(station, keyword):
         result = data.get("searchResult", {})
         matches = []
         for f in result.get("files", []):
+            date_str = f.get("create_ts", "")[:10]
+            if date_str and date_str < "2026-01-01":
+                continue
             matches.append({
                 "entityId": station["id"],
                 "callSign": station["callSign"],
@@ -99,6 +102,7 @@ def search_station(station, keyword):
                 "folderId": f.get("folder_id", ""),
                 "fileId": f.get("file_id", ""),
                 "extension": f.get("file_extension", ""),
+                "dateFiled": date_str,
             })
         for folder in result.get("folders", []):
             matches.append({

@@ -74,6 +74,9 @@ def search_station(session, station, keyword):
             result = data.get("searchResult", {})
             matches = []
             for f in result.get("files", []):
+                date_str = f.get("create_ts", "")[:10]
+                if date_str and date_str < "2026-01-01":
+                    continue
                 matches.append({
                     "Station": station["callSign"],
                     "City": station["city"].title(),
@@ -82,7 +85,7 @@ def search_station(session, station, keyword):
                     "Document Name": f.get("file_name", ""),
                     "Folder Path": f.get("file_folder_path", ""),
                     "Extension": f.get("file_extension", "").upper(),
-                    "Date Filed": f.get("create_ts", "")[:10],
+                    "Date Filed": date_str,
                     "Entity ID": station["id"],
                     "File ID": f.get("file_id", ""),
                     "PDF": f"https://publicfiles.fcc.gov/api/manager/download/{f.get('folder_id','')}/{f.get('file_manager_id','')}.pdf" if f.get("file_manager_id") else "",
